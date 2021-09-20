@@ -1,0 +1,54 @@
+select count(distinct(country_id)) as qtd_paizes
+from locations;
+
+
+select a.country_name,b.city
+from public.countries as A
+left join public.locations as B on (A.country_id=B.country_id)
+where b.country_id in ('UK','DE')
+
+select concat(A.first_name,' ',A.last_name) as nome_completo,
+	   COUNT(B.dependent_id) as qtd_dependentes
+from public.employees as A
+left join dependents as B on (A.employee_id=B.employee_id)
+Group BY 1
+order by qtd_dependentes desc, nome_completo asc;
+
+
+select *,
+		case when date_part('year',age(hire_date))>=25 then 'BONUS'
+		else 'ESPERAR' end as premio
+from employees;
+
+
+select A.department_name as nome_departamento,
+		COUNT(B.employee_id) AS numero_funcionarios,
+		round((sum(B.salary)::numeric),2) as salario_total,
+		round((AVG(B.salary)::numeric),2) as salario_medio
+from departments as A
+left join employees as B on (A.department_id=B.department_id)
+GROUP BY 1
+order by salario_medio desc;
+
+
+
+WITH temp_table as(
+    SELECT 
+    dep.location_id,
+    dep.department_name nome_departamento, 
+    SUM(emp.salary) salario_total
+    FROM departments dep
+    JOIN employees emp on emp.department_id = dep.department_id
+    GROUP BY dep.location_id, dep.department_name
+    ORDER BY 3 DESC
+-- 	Modifiquei o limit, pois queriamos apenas os 3 departamentos com maiores salarios
+    LIMIT 3)
+	
+	Select tt.*, cnt.country_name
+    from temp_table as tt 
+-- Nesse join eu mudei a referencia de cnt para tt, pois na tabela cnt não temos location_id
+	join locations as loc on loc.location_id = tt.location_id
+-- Nesse join eu mudei a referencia de tt para loc, pois na tabela tt não temos country_id
+    join countries as cnt on cnt.country_id = loc.country_id
+    order by 2 DESC;
+

@@ -1,0 +1,32 @@
+create external table departments
+(
+teste int,
+department_name string,
+location_id int
+)       
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/user/hive/hr/departments'
+tblproperties ("skip.header.line.count"="1");
+
+
+create external table resultado
+(
+Data date,
+equipe_mandante string,
+equipe_visitante string,
+gol_equipe_mandante int,
+gol_equipe_visitante int,
+torneio string,
+cidade string,
+pais string,
+fora_pais boolean
+)       
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/user/cloudera/projeto'
+tblproperties ("skip.header.line.count"="1");
+
+
